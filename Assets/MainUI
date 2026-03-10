@@ -1899,86 +1899,73 @@ end)
           UICorner.Parent = image
         end
 
-        function Module:create_textbox()
-            local section = self.section == 'left' and left_section or right_section
-			local Textbox = {}
-            local textbox = Instance.new("TextButton")
-			textbox.Name = "TextBox"
-			textbox.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
-			textbox.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			textbox.BorderSizePixel = 0
-			textbox.Size = UDim2.new(0, 215, 0, 36)
-			textbox.AutoButtonColor = false
-			textbox.Font = Enum.Font.SourceSans
-			textbox.Text = ""
-			textbox.TextColor3 = Color3.fromRGB(0, 0, 0)
-			textbox.TextSize = 14.000				
-            textbox.Parent = section
+        function Module:create_textbox(info)
+    	info = info or {}
+    	self.name = info.name or ""
+    	self.flag = info.flag or ""
+    	self.section = info.section or "left"
+    	self.value = info.value or ""
+    	self.callback = info.callback or function() end
 
-			local UICorner = Instance.new("UICorner")
-			UICorner.CornerRadius = UDim.new(0, 10)
-			UICorner.Parent = textbox
+    	local section = self.section == "left" and left_section or right_section
+    	local Textbox = {}
 
-			local UIListLayout = Instance.new("UIListLayout")
-			UIListLayout.Parent = textbox
-			UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-			UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    	local textbox = Instance.new("Frame")
+    	textbox.Name = "TextBox"
+    	textbox.Size = UDim2.new(0, 215, 0, 36)
+    	textbox.BackgroundColor3 = Color3.fromRGB(27,28,33)
+    	textbox.BorderSizePixel = 0
+    	textbox.Parent = section
 
-			local UIPadding = Instance.new("UIPadding")
-			UIPadding.Parent = textbox
-			UIPadding.PaddingTop = UDim.new(0, 6)
-			
-			local Box = Instance.new("Frame")
-			Box.Name = "Box"
-			Box.Parent = textbox
-			Box.AnchorPoint = Vector2.new(0.5, 0)
-			Box.BackgroundColor3 = Color3.fromRGB(22, 23, 27)
-			Box.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			Box.BorderSizePixel = 0
-			Box.Position = UDim2.new(0.5, 0, 0.150000006, 0)
-			Box.Size = UDim2.new(0, 202, 0, 25)
-			Box.ZIndex = 2
+    	local UICorner = Instance.new("UICorner")
+    	UICorner.CornerRadius = UDim.new(0,10)
+    	UICorner.Parent = textbox
 
-			
-			local UICorner_2 = Instance.new("UICorner")
-			UICorner_2.CornerRadius = UDim.new(0, 6)
-			UICorner_2.Parent = Box
+    	local Box = Instance.new("Frame")
+    	Box.Name = "Box"
+    	Box.Size = UDim2.new(0, 202, 0, 25)
+    	Box.Position = UDim2.new(0.5, 0, 0.15, 0)
+    	Box.AnchorPoint = Vector2.new(0.5,0)
+    	Box.BackgroundColor3 = Color3.fromRGB(22,23,27)
+    	Box.BorderSizePixel = 0
+    	Box.Parent = textbox
 
-			local TextHolder = Instance.new("TextBox")
-			TextHolder.Name = "TextHolder"
-			TextHolder.Parent = Box
-			TextHolder.BackgroundColor3 = Color3.fromRGB(22, 23, 27)
-			TextHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			TextHolder.BorderSizePixel = 0
-			TextHolder.Position = UDim2.new(0.0445544571, 0, 0.239999995, 0)
-			TextHolder.Size = UDim2.new(0, 182, 0, 13)
-			TextHolder.ZIndex = 2
-			TextHolder.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
-			TextHolder.Text = ""
-			TextHolder.TextColor3 = Color3.fromRGB(255, 255, 255)
-			TextHolder.TextSize = 14.000
-			TextHolder.TextXAlignment = Enum.TextXAlignment.Left
-			textbox.Box.TextHolder.PlaceholderText = self.name
+    	local UICorner2 = Instance.new("UICorner")
+    	UICorner2.CornerRadius = UDim.new(0,6)
+    	UICorner2.Parent = Box
 
-			if not Library.Flags[self.flag] then
-				Library.Flags[self.flag] = self.value
-			else
-				textbox.Box.TextHolder.Text = Library.Flags[self.flag]
-			end
+    	local TextHolder = Instance.new("TextBox")
+    	TextHolder.Name = "TextHolder"
+    	TextHolder.Size = UDim2.new(0,182,0,13)
+    	TextHolder.Position = UDim2.new(0.0445,0,0.24,0)
+    	TextHolder.BackgroundColor3 = Color3.fromRGB(22,23,27)
+    	TextHolder.BorderSizePixel = 0
+    	TextHolder.Font = Enum.Font.SourceSans
+    	TextHolder.PlaceholderText = self.name
+    	TextHolder.TextColor3 = Color3.fromRGB(255,255,255)
+    	TextHolder.TextSize = 14
+    	TextHolder.TextXAlignment = Enum.TextXAlignment.Left
+    	TextHolder.Parent = Box
 
-			self.callback(Library.Flags[self.flag])
-			textbox.Box.TextHolder.FocusLost:Connect(function()
-				self.callback(textbox.Box.TextHolder.Text)
-				Library.save_flags()
-			end)
+    	local initial = Library.Flags[self.flag] or self.value
+    	Library.Flags[self.flag] = initial
+    	TextHolder.Text = initial
 
-			function Textbox:update(text)
-				textbox.Box.TextHolder.Text = text
-				self.callback(text)
-			end
+    	self.callback(initial)
 
-        return Textbox;
-    end
+    	TextHolder.FocusLost:Connect(function()
+        	Library.Flags[self.flag] = TextHolder.Text
+        	self.callback(TextHolder.Text)
+        	Library.save_flags()
+    	end)
+
+    	function Textbox:update(text)
+        	TextHolder.Text = text
+        	self.callback(text)
+    	end
+
+    	return Textbox
+	end
 		function Module:create_keybind()
 			local section = self.section == 'left' and left_section or right_section
 			local keybind = Instance.new("TextButton")
