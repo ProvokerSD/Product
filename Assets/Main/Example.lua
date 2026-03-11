@@ -21,10 +21,11 @@
  
 @ ProvokerSD | © COPYRIGHT
 --// Hey, before skidding read — LICENSE ✨.
+--// Made ForThoseWhoCare.
 ]]
 
 getgenv().namehub = "• Name"
-local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/ProvokerSD/Product/refs/heads/main/Assets/MainUI'))()
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/ProvokerSD/Product/refs/heads/main/Assets/Main/.lua'))()
 local Main = Library.__init()
 
 --// [MAIN TAB]
