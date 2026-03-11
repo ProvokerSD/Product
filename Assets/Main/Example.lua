@@ -24,6 +24,21 @@
 --// Made ForThoseWhoCare.
 ]]
 
+--// [NOTIFY]
+
+local Notification = loadstring(game:HttpGet('https://raw.githubusercontent.com/ProvokerSD/Product/refs/heads/main/Assets/Main/Notify'))()
+local Notify = Notification.Notify;
+
+local function create_notify(title, description, duration)
+    Notify({
+        Title = title; 
+        Description = description; 
+        Duration = duration;
+    });
+end 
+
+--// [LIBRARY]
+
 getgenv().namehub = "• Name"
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/ProvokerSD/Product/refs/heads/main/Assets/Main/.lua'))()
 local Main = Library.__init()
@@ -49,7 +64,9 @@ MainTab.create_toggle({ --[1 TAB]
     section = 'left', 
     enabled = false, --[TRUE/FALSE] 
     callback = function(toggled) 
-  
+        if toggled then 
+            create_notify('Notification', '• Text.', 1) --[NOTIFICATION DURATION]
+        end
     end
 })
 
@@ -60,7 +77,9 @@ MainTab.create_description_toggle({ --[2 TAB]
     description = 'Description', --[DESCRIPTION]
     enabled = false, 
     callback = function(toggled) 
-  
+        if toggled then 
+            create_notify('Notification', '• Text.', 1) 
+        end
     end
 })
 
@@ -70,6 +89,7 @@ MainTab.create_button({ --[1 BUTTON]
     section = 'left', 
     callback = function(touched) 
         print('Example of How It Works') --[EXAMPLE]
+        create_notify('Notification', '• Text', 1) 
     end
 })
 
@@ -79,7 +99,7 @@ MainTab.create_description_button({ --[2 BUTTON]
     section = 'left', 
     description = 'Description',
     callback = function(touched) 
-
+        create_notify('Notification', '• Text.', 1) 
     end
 })
 
@@ -91,7 +111,7 @@ MainTab.create_slider({ --[SLIDER]
     minimum_value = 0, -- [LOWEST VALUE]
     maximum_value = 5, -- [HIGHEST VALUE]
     callback = function(SliderEnabled)
-
+        
     end 
 })
 
@@ -102,7 +122,9 @@ MainTab.create_dropdown({
     option = 'Dropdown 2',
     options = {'Dropdown 1', 'Dropdown 2', 'Dropdown 3'},
     callback = function(selected)
-
+        if selected then
+            create_notify('Notification', '• Selected: ' .. selected, 1) 
+        end
     end
 })
 
@@ -116,6 +138,7 @@ MainTab.create_textbox({ --[TEXT BOX]
     callback = function(value) 
         if value ~= '' and value ~= nil then --// [EXAMPLE]
             print('VALUE:', value)
+            create_notify('Notification', '• Text: ' .. value, 1) 
         end
     end
 })
@@ -127,7 +150,7 @@ MainTab.create_keybind({ --// [KEYBIND]
     section = 'left',
     keycode = Enum.KeyCode.M, --// [DEFAULT KEY]
     callback = function(key)
-        
+        create_notify('Notification', '• Key: ' .. key, 1) 
     end
 })
 
@@ -151,3 +174,5 @@ MainTab.create_verified({ --[VERIFIED]
 })
 
 return Main
+
+--// 🗒️ [BTW You can remove the notifications. I only included them as an example of how the functions work.]
