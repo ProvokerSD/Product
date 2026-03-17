@@ -25,12 +25,12 @@
 
 local UserInputService = game:GetService('UserInputService')
 local LocalPlayer = game:GetService('Players').LocalPlayer
+local Workspace = cloneref(game:GetService('Workspace'))
 local TweenService = game:GetService('TweenService')
 local HttpService = game:GetService('HttpService')
 local CoreGui = game:GetService('CoreGui')
 
 local Mouse = LocalPlayer:GetMouse();
-
 
 local Library = {
 	connections = {};
@@ -43,9 +43,31 @@ local Library = {
     start_position = nil;
 }
 
+local function get_blur_enabled()
+    local cfg = getgenv().UITweaks_Enabled or {}
+    return cfg.blur == true
+end
 
-if not isfolder("Visual") then
-    makefolder("Visual")
+local function get_blur_size()
+    local cfg = getgenv().UITweaks_Enabled or {}
+    return tonumber(cfg.blur_size) or 256
+end
+
+local function get_color_enabled()
+    local cfg = getgenv().UITweaks_Enabled or {}
+    return cfg.color == true
+end
+
+local function get_color_saturation()
+    local cfg = getgenv().UITweaks_Enabled or {}
+    return tonumber(cfg.color_size) or -1
+end
+
+local IsModbile_Enabled = UserInputService.TouchEnabled
+local ColorShader_Enabled, BlurShader_Enabled
+
+if not isfolder('Visual') then
+    makefolder('Visual')
 end
 
 function Library:disconnect()
@@ -53,7 +75,6 @@ function Library:disconnect()
 		if not Library.connections[value] then
 			continue
 		end
-
 		Library.connections[value]:Disconnect()
 		Library.connections[value] = nil
 	end
@@ -61,10 +82,9 @@ end
 
 function Library:clear()
 	for _, object in CoreGui:GetChildren() do
-		if object.Name ~= "Visual" then
+		if object.Name ~= 'Visual' then
 			continue
 		end
-	
 		object:Destroy()
 	end
 end
@@ -95,6 +115,36 @@ Library.load_flags()
 Library.clear()
 
 function Library:open()
+    if get_color_enabled() then
+        if not ColorShader_Enabled then
+            ColorShader_Enabled = Instance.new('ColorCorrectionEffect', Workspace.CurrentCamera)
+            if not IsModbile_Enabled then
+                ColorShader_Enabled.Saturation = 0
+            end
+        end
+
+        TweenService:Create(
+            ColorShader_Enabled,
+            TweenInfo.new(0.65, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
+            { Saturation = get_color_saturation() }
+        ):Play()
+    end
+
+    if get_blur_enabled() then
+        if not BlurShader_Enabled then
+            BlurShader_Enabled = Instance.new('BlurEffect', Workspace.CurrentCamera)
+            if not IsModbile_Enabled then
+                BlurShader_Enabled.Size = 0
+            end
+        end
+
+        TweenService:Create(
+            BlurShader_Enabled,
+            TweenInfo.new(0.65, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
+            { Size = get_blur_size() }
+        ):Play()
+    end
+
 	self.Container.Visible = true
 	self.Shadow.Visible = true
 	self.Mobile.Modal = true
@@ -109,6 +159,22 @@ function Library:open()
 end
 
 function Library:close()
+    if ColorShader_Enabled then
+        TweenService:Create(
+            ColorShader_Enabled,
+            TweenInfo.new(0.65, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
+            { Saturation = 0 }
+        ):Play()
+    end
+
+    if BlurShader_Enabled then
+        TweenService:Create(
+            BlurShader_Enabled,
+            TweenInfo.new(0.65, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
+            { Size = 0 }
+        ):Play()
+    end
+    
 	TweenService:Create(self.Shadow, TweenInfo.new(0.6, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut), {
 		Size = UDim2.new(0, 0, 0, 0)
 	}):Play()
@@ -119,10 +185,7 @@ function Library:close()
 
 	main_tween:Play()
 	main_tween.Completed:Once(function()
-		if Library.enabled then
-			return
-		end
-
+		if Library.enabled then return end
 		self.Container.Visible = false
 		self.Shadow.Visible = false
 		self.Mobile.Modal = false
@@ -162,7 +225,7 @@ end
 
 --// [© Copyright | LICENCE 📑] 
 
-print("UI - ©ProvokerSD") --// [⚠️ DO NOT DELETE THIS, OR YOUR SCRIPT WILL BE SHUT DOWN!]
+print('UI - ©ProvokerSD') --// [⚠️ DO NOT DELETE THIS!]
 
 function Library.__init()
 	local container = Instance.new("ScreenGui")
@@ -211,16 +274,16 @@ function Library.__init()
 	Top.Image = "rbxassetid://17290652150"
 
 	local Logo = Instance.new("ImageLabel")
-    	Logo.Name = "Logo"
-    	Logo.Parent = Top
-    	Logo.AnchorPoint = Vector2.new(0.5, 0.5)
-    	Logo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    	Logo.BackgroundTransparency = 1.000
-    	Logo.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    	Logo.BorderSizePixel = 0
-    	Logo.Position = UDim2.new(0.950000048, 0, 0.5, 0)
-    	Logo.Size = UDim2.new(0, 20, 0, 20)
-    	Logo.Image = "rbxassetid://110130056211155"
+    Logo.Name = "Logo"
+    Logo.Parent = Top
+    Logo.AnchorPoint = Vector2.new(0.5, 0.5)
+    Logo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Logo.BackgroundTransparency = 1.000
+    Logo.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Logo.BorderSizePixel = 0
+    Logo.Position = UDim2.new(0.950000048, 0, 0.5, 0)
+    Logo.Size = UDim2.new(0, 20, 0, 20)
+    Logo.Image = "rbxassetid://110130056211155"
 	Logo.ImageTransparency = 1
 	
 	local TextLabel = Instance.new("TextLabel")
@@ -252,36 +315,35 @@ function Library.__init()
   	TextLabel.FontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.SemiBold)
   	TextLabel.Text = "00:00"
   	TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    	TextLabel.TextScaled = true
+    TextLabel.TextScaled = true
   	TextLabel.TextSize = 13
   	TextLabel.TextWrapped = true
   	TextLabel.TextXAlignment = Enum.TextXAlignment.Center
   	TextLabel.TextTransparency = 0
 
 	local Cat = Instance.new("ImageLabel")
-    	Cat.Name = "Cat"
-    	Cat.Parent = Top
-    	Cat.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    	Cat.BackgroundTransparency = 1.000
-    	Cat.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    	Cat.BorderSizePixel = 0
-    	Cat.Position = UDim2.new(0.930000007, 0, 0.200000003, 0)
-    	Cat.Size = UDim2.new(0, 25, 0, 25)
-    	Cat.ZIndex = 3
-    	Cat.Image = "rbxassetid://74080484918102"
-    	Cat.ImageRectSize = Vector2.new(20, 20)
+    Cat.Name = "Cat"
+    Cat.Parent = Top
+    Cat.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Cat.BackgroundTransparency = 1.000
+    Cat.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Cat.BorderSizePixel = 0
+    Cat.Position = UDim2.new(0.930000007, 0, 0.200000003, 0)
+    Cat.Size = UDim2.new(0, 25, 0, 25)
+    Cat.ZIndex = 3
+    Cat.Image = "rbxassetid://74080484918102"
+    Cat.ImageRectSize = Vector2.new(20, 20)
 
-    	local function AnimateGif(ImageLabel, Width, Height, Rows, Columns, NumberOfFrames, ImageID, FPS)
-        if ImageID then ImageLabel.Image = ImageID end
-        local RobloxMaxImageSize = 2048
-        local RealWidth, RealHeight
-
+    local function AnimateGif(ImageLabel, Width, Height, Rows, Columns, NumberOfFrames, ImageID, FPS)
+    if ImageID then ImageLabel.Image = ImageID end
+    local RobloxMaxImageSize = 2048
+    local RealWidth, RealHeight
         if math.max(Width, Height) > RobloxMaxImageSize then
-            local Longest = Width > Height and "Width" or "Height"
-            if Longest == "Width" then
+            local Longest = Width > Height and 'Width' or 'Height'
+            if Longest == 'Width' then
                 RealWidth = RobloxMaxImageSize
                 RealHeight = (RealWidth / Width) * Height
-            elseif Longest == "Height" then
+            elseif Longest == 'Height' then
                 RealHeight = RobloxMaxImageSize
                 RealWidth = (RealHeight / Height) * Width
             end
@@ -306,10 +368,8 @@ function Library.__init()
                 CurrentRow += 1
             end
         end
-
         local TimeInterval = FPS and 1 / FPS or 0.1
         local Index = 0
-
         task.spawn(function()
             while task.wait(TimeInterval) and ImageLabel:IsDescendantOf(game) do
                 Index += 1
@@ -321,46 +381,46 @@ function Library.__init()
         end)
     end
 
-  AnimateGif(Cat, 60, 40, 2, 3, 5, "rbxassetid://74080484918102", 10)
+    AnimateGif(Cat, 60, 40, 2, 3, 5, 'rbxassetid://74080484918102', 10)
 
-  local startTime = os.time()
+    local startTime = os.time()
 
-  local function formatTime(seconds)
-  local minutes = math.floor(seconds / 60)
-  local secs = seconds % 60
-    return string.format("%02d:%02d", minutes, secs)
-  end
+    local function formatTime(seconds)
+    local minutes = math.floor(seconds / 60)
+    local secs = seconds % 60
+        return string.format('%02d:%02d', minutes, secs)
+    end
 
-  local function updateTextSmoothly(newText)
-  local fadeOutInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
-  local fadeInInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.In)
+    local function updateTextSmoothly(newText)
+    local fadeOutInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+    local fadeInInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.In)
     
-  local fadeOut = TweenService:Create(TextLabel, fadeOutInfo, {TextTransparency = 1})
-  fadeOut:Play()
+    local fadeOut = TweenService:Create(TextLabel, fadeOutInfo, {TextTransparency = 1})
+    fadeOut:Play()
 
-  fadeOut.Completed:Connect(function()
-      TextLabel.Text = newText
-  local fadeIn = TweenService:Create(TextLabel, fadeInInfo, {TextTransparency = 0})
-      fadeIn:Play()
-  end)
-  end
+    fadeOut.Completed:Connect(function()
+        TextLabel.Text = newText
+            local fadeIn = TweenService:Create(TextLabel, fadeInInfo, {TextTransparency = 0})
+            fadeIn:Play()
+        end)
+    end
 
-  spawn(function()
-   while true do
-      local elapsedTime = os.time() - startTime
-      updateTextSmoothly(formatTime(elapsedTime))
-      wait(1)
-  end
-  end)
+    spawn(function()
+        while true do
+            local elapsedTime = os.time() - startTime
+            updateTextSmoothly(formatTime(elapsedTime))
+            wait(1)
+        end
+    end)
 
-  local Line = Instance.new("Frame")
-  Line.Name = "Line"
-  Line.Parent = Container
-  Line.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
-  Line.BorderColor3 = Color3.fromRGB(0, 0, 0)
-  Line.BorderSizePixel = 0
-  Line.Position = UDim2.new(0.296137333, 0, 0.0915492922, 0)
-  Line.Size = UDim2.new(0, 2, 0, 387)
+    local Line = Instance.new("Frame")
+    Line.Name = "Line"
+    Line.Parent = Container
+    Line.BackgroundColor3 = Color3.fromRGB(27, 28, 33)
+    Line.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Line.BorderSizePixel = 0
+    Line.Position = UDim2.new(0.296137333, 0, 0.0915492922, 0)
+    Line.Size = UDim2.new(0, 2, 0, 387)
 
     local tabs = Instance.new("ScrollingFrame")
 	tabs.Name = "Tabs"
@@ -373,7 +433,7 @@ function Library.__init()
 	tabs.Size = UDim2.new(0, 209, 0, 386)
 	tabs.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
 	tabs.ScrollBarThickness = 0
-    	tabs.Parent = container.Container
+    tabs.Parent = container.Container
 
 	local tabslist = Instance.new("UIListLayout")
 	tabslist.Parent = tabs
@@ -404,16 +464,14 @@ function Library.__init()
     mobile_button.TextColor3 = Color3.fromRGB(0, 0, 0)
     mobile_button.TextSize = 14.000
     mobile_button.Parent = container
-
-    local userInputService = game:GetService("UserInputService")
  
-	  if userInputService.GamepadEnabled then
-      deviceType = "Controller"
-    elseif userInputService.TouchEnabled then
-    	deviceType = "Mobile"
+	if UserInputService.GamepadEnabled then
+        deviceType = 'Controller'
+    elseif UserInputService.TouchEnabled then
+    	deviceType = 'Mobile'
 	  else
-    	deviceType = "PC"
-	  end
+    	deviceType = 'PC'
+	end
 
     local defaultPosition = UDim2.new(0.5, -300, 0.8, 33)
     local newPosition1 = UDim2.new(0.5, 0.5)
@@ -453,8 +511,8 @@ function Library.__init()
     UserInputService.InputBegan:Connect(onInputBegan)
     UserInputService.InputEnded:Connect(onInputEnded)
 
-    local UIS = game:GetService("UserInputService")
-    local TweenService = game:GetService("TweenService")
+    local UIS = game:GetService('UserInputService')
+    local TweenService = game:GetService('TweenService')
 
     local dragging, dragInput, dragStart, startPos
     local mobileVisible = true
@@ -551,14 +609,12 @@ function Library.__init()
     end
 
     local f = function(o)
-    local x = ""
-    for z, n in ipairs(o) do
-        x = x .. string.char(n)
+    local x = ''
+        for z, n in ipairs(o) do
+            x = x .. string.char(n)
+        end
+        return x
     end
-    return x
-    end
- 
-    local TweenService = game:GetService("TweenService")
 
     mobile_button.AnchorPoint = Vector2.new(0.5, 0.5)
     shadowMobile.AnchorPoint = Vector2.new(0.5, 0.5)
