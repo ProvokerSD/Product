@@ -39,7 +39,7 @@ end
 
 --// [LIBRARY]
 
-getgenv().namehub = "• Name"
+getgenv().namehub = '• Name' --// [PRODUCT NAME]
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/ProvokerSD/Product/refs/heads/main/Assets/Main/.lua'))()
 local Main = Library.__init()
 
