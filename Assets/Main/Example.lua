@@ -40,6 +40,12 @@ end
 --// [LIBRARY]
 
 getgenv().namehub = '• Name' --// [PRODUCT NAME]
+getgenv().UITweaks_Enabled = { --// [TWEAKS]
+    blur = false, 
+    blur_size = 0,
+    color = false,
+    color_size = -0,
+}
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/ProvokerSD/Product/refs/heads/main/Assets/Main/.lua'))()
 local Main = Library.__init()
 
