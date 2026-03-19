@@ -66,9 +66,11 @@ end
 local IsModbile_Enabled = UserInputService.TouchEnabled
 local ColorShader_Enabled, BlurShader_Enabled
 
-if not isfolder('Visual') then
-    makefolder('Visual')
-end
+local fs_supported = pcall(function() --// [Filesystem support for Velocity ⭐ DO NOT REMOVEEE]
+    if not isfolder('Visual') then
+        makefolder('Visual')
+    end
+end)
 
 function Library:disconnect()
 	for _, value in Library.connections do
@@ -97,18 +99,34 @@ end
 
 function Library:save_flags()
     if not Library.exist() then return end
-
     local flags = HttpService:JSONEncode(Library.Flags)
-    writefile(`Visual/{game.GameId}.lua`, flags)
+    if fs_supported then
+        writefile(`Visual/{game.GameId}.lua`, flags)
+    else
+        getgenv().VisualFlags = flags
+    end
 end
 
 function Library:load_flags()
-    if not isfile(`Visual/{game.GameId}.lua`) then Library.save_flags() return end
+    if fs_supported then
+        if not isfile(`Visual/{game.GameId}.lua`) then 
+            Library:save_flags() 
+            return 
+        end
+        local flags = readfile(`Visual/{game.GameId}.lua`)
+        if not flags then 
+            Library:save_flags() 
+            return 
+        end
+        Library.Flags = HttpService:JSONDecode(flags)
+    else
+        if not getgenv().VisualFlags then
+            Library:save_flags()
+            return
+        end
 
-    local flags = readfile(`Visual/{game.GameId}.lua`)
-    if not flags then Library.save_flags() return end
-
-    Library.Flags = HttpService:JSONDecode(flags)
+        Library.Flags = HttpService:JSONDecode(getgenv().VisualFlags)
+    end
 end
 
 Library.load_flags()
