@@ -19,7 +19,7 @@
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠿⠴⠮⣥⠻⢧⣤⣄⣀⡉⢩⣭⣍⣃⣀⣩⠎⢀⣼⠉⣼⡯⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⠁⣛⠓⢒⣒⣢⡭⢁⡈⠿⠿⠟⠹⠛⠁⠀⠀⠀⠰⠃⠂⠀⠀⠀
  
-@ ProvokerSD | © COPYRIGHT
+@ ProvokerSD | © COPYRIGHT 2026-2036
 --// Hey, before skidding read — LICENSE ✨.
 --// Made ForThoseWhoCare.
 ]]
@@ -39,8 +39,8 @@ end
 
 --// [LIBRARY]
 
-getgenv().namehub = '• Name' --// [PRODUCT NAME]
-getgenv().UITweaks_Enabled = { --// [TWEAKS]
+getgenv().Get_Name = '• Name' --// [PRODUCT NAME]
+getgenv().UITweaks_Enabled = { --// [TWEAKS ⭐]
     blur = false, 
     blur_size = 0,
     color = false,
@@ -64,7 +64,7 @@ MainTab.create_paragraph({ --[PARAGRAPH]
     section = 'left'
 })
 
-MainTab.create_toggle({ --[1 TAB]
+ MainTab.create_toggle({ --[1 TOGGLE]
     name = 'Toggle',
     flag = 'ToggleEnabled', --[FLAG]
     section = 'left', 
@@ -76,7 +76,7 @@ MainTab.create_toggle({ --[1 TAB]
     end
 })
 
-MainTab.create_description_toggle({ --[2 TAB]
+MainTab.create_description_toggle({ --[2 TOGGLE]
     name = 'Toggle 2',
     flag = 'Toggle2Enabled',
     section = 'left', 
@@ -116,17 +116,17 @@ MainTab.create_slider({ --[SLIDER]
     value = 1, -- [DEFAULT VALUE]
     minimum_value = 0, -- [LOWEST VALUE]
     maximum_value = 5, -- [HIGHEST VALUE]
-    callback = function(SliderEnabled)
+    callback = function(value)
         
     end 
 })
 
-MainTab.create_dropdown({
+MainTab.create_dropdown({ --// [DROPDOWN]
     name = 'Dropdown',
     flag = 'DropdownEnabled',
     section = 'left',
-    option = 'Dropdown 2',
-    options = {'Dropdown 1', 'Dropdown 2', 'Dropdown 3'},
+    option = 'Dropdown 2', --// [DEFAULT OPTION]
+    options = {'Dropdown 1', 'Dropdown 2', 'Dropdown 3'}, --// [OPTIONS]
     callback = function(selected)
         if selected then
             create_notify('Notification', '• Selected: ' .. selected, 1) 
