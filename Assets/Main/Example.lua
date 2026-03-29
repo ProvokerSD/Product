@@ -52,7 +52,7 @@ local Main = Library.__init()
 --// [MAIN TAB]
 
 local MainTab = Main.create_tab('Tab') --// [TAB TEMP]
---\\ local MainTab = Main:create_tab('Tab', 'rbxassetid://109158649691059')  --// [USE THIS IF YOU WANT TO SET THE TAB'S LOGO MANUALLY] ⭐
+--\\ local MainTab = Main:create_tab('Tab', 'rbxassetid://113675631750958')  --// [USE THIS IF YOU WANT TO SET THE TAB'S LOGO MANUALLY] ⭐
 
 MainTab.create_title({ --[TITLE TEMP]
     name = '• Title',
