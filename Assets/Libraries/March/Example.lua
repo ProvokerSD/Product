@@ -11,10 +11,10 @@ local Example_Name = MainTab:create_module({
     flag = 'ModuleEnabled', --[FLAG]
     description = 'Description', --[DESCRIPTION]
     section = 'left', --[LEFT/RIGHT]
-    callback = function(value)
+    callback = function(toggled)
         Library.SendNotification({ --// [NOTIFY]
             title = 'Title',
-            text = value and 'Enabled.' or 'Disabled.',
+            text = toggled and 'Enabled.' or 'Disabled.',
             duration = 1.5
         })
     end
@@ -56,7 +56,7 @@ Example_Name:create_slider({ --[SLIDER]
 Example_Name:create_checkbox({ --// [CHECK BOX]
     title = 'Check Box',
     flag = 'CheckBoxEnabled',
-    callback = function(value) 
+    callback = function(enabled) 
     
     end
 })
@@ -65,7 +65,7 @@ Example_Name:create_textbox({ --[TEXT BOX]
     title = 'Text Box',
     placeholder = 'Text',
     flag = 'TextBoxEnabled',
-    callback = function(value) 
+    callback = function(text) 
     
     end
 })
